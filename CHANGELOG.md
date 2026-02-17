@@ -1,4 +1,13 @@
-# Changelog
+## v32 (Smart Static Year)
+
+Improved how the start month is calculated for Year and Semester views.
+
+### **Features**
+- **Smart Logic (`fixedYear: true`):**
+    - **12 Months View:** Now automatically locks to **Jan-Dec** of the current year. (Previously, it would strangely roll forward, e.g., Feb-Jan).
+    - **6 Months View:** Now acts as a **Semester View**. It automatically snaps to **Jan-Jun** or **Jul-Dec** depending on the current date.
+    - **Other Views (e.g., 3 months):** Remain **Dynamic**, starting from the current month to ensure you always see upcoming events.
+- **Config:** Added `fixedYear` (default `true`). Set to `false` to revert to the old "always dynamic" behavior.
 
 ## v31 (Stability Fixes)
 

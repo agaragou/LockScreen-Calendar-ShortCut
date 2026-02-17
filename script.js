@@ -1,4 +1,4 @@
-// Year Progress Wallpaper v31 - Wallpapers, gradients and massive rework and update
+// Year Progress Wallpaper v32 - Wallpapers, gradients and massive rework and update
 // by agaragou
 // https://github.com/agaragou/LockScreen-Calendar-ShortCut
 const CONFIG = {
@@ -7,6 +7,7 @@ const CONFIG = {
   monthsPerRow: 3,         // Standard is 3
   monthOffset: 0,          // Start from 0 = Current, -1 = Previous, 1 = Next
   contentScale: 1.0,       // Global Scale Multiplier (>1.0 bigger, <1.0 smaller)
+  fixedYear: true,         // If true: 12 months -> Jan..Dec; 6 months -> Jan..Jun or Jul..Dec
 
   // Day & Dot Settings
   showDayNumbers: false,   // true = numbers, false = dots
@@ -344,6 +345,20 @@ const monthBlockWidth = (6 * DOT_SPACING) + (DOT_RADIUS * 2);
 const totalCalendarWidth = (CONFIG.monthsPerRow * monthBlockWidth) + ((CONFIG.monthsPerRow - 1) * COL_GAP);
 const startX = (width - totalCalendarWidth) / 2;
 
+// Smart Static Year Logic
+// If fixedYear is ON:
+// - 12 months: Force Jan-Dec (0)
+// - 6 months: Force Jan-Jun (0) or Jul-Dec (6)
+// Otherwise: Start from currentMonth (Dynamic)
+let loopBaseMonth = currentMonth;
+if (CONFIG.fixedYear) {
+  if (CONFIG.monthsToShow === 12) {
+    loopBaseMonth = 0;
+  } else if (CONFIG.monthsToShow === 6) {
+    loopBaseMonth = (currentMonth < 6) ? 0 : 6;
+  }
+}
+
 // --- DRAW CONTAINER (Optional) ---
 if (CONFIG.showContainer) {
   const containerPadding = DOT_SPACING * 0.8;
@@ -360,7 +375,7 @@ if (CONFIG.showContainer) {
   let maxWeeksInLastRow = 0;
 
   for (let idx = lastRowStartIndex; idx < lastRowEndIndex; idx++) {
-    let targetMonthIndex = (currentMonth + CONFIG.monthOffset + idx);
+    let targetMonthIndex = (loopBaseMonth + CONFIG.monthOffset + idx);
     let year = currentYear + Math.floor(targetMonthIndex / 12);
     let month = ((targetMonthIndex % 12) + 12) % 12;
 
@@ -397,13 +412,13 @@ if (CONFIG.showContainer) {
 
 for (let i = CONFIG.monthOffset; i < CONFIG.monthOffset + CONFIG.monthsToShow; i++) {
   // Logic to handle month/year overflow
-  let targetMonthIndex = (currentMonth + i);
+  let targetMonthIndex = (loopBaseMonth + i);
 
   // Correction for negative indices (if we supported past months properly in the loop)
   // Standard math for modulo with negatives
   targetMonthIndex = ((targetMonthIndex % 12) + 12) % 12;
 
-  let targetYear = currentYear + Math.floor((currentMonth + i) / 12);
+  let targetYear = currentYear + Math.floor((loopBaseMonth + i) / 12);
 
   // Adjust i for grid placement if we started with negative offset
   let gridIndex = i - CONFIG.monthOffset;
