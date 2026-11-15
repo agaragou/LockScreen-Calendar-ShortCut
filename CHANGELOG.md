@@ -1,3 +1,21 @@
+## v33 (iOS 27.2 Fix)
+
+iOS 27.2 broke the Shortcut: newer sandbox rules prevent Shortcuts from reading temporary files created by Scriptable, so "Set Wallpaper" got nothing.
+
+### **Fixes**
+- **Base64 Output:** The script now returns the rendered PNG as a Base64 string (`Data.fromPNG(image).toBase64String()`) instead of a temp file path.
+
+### **Action Required (Shortcuts)**
+1. Add a **Base64 Encode** action right after **Run Script** and switch it to **Decode** (input: Run Script's "Output").
+2. In **Set Wallpaper**, replace the old "Output" variable with **Base64 Encoded** (the result of the Decode step).
+
+### **Docs**
+- README: Shortcut setup updated with the Decode step, new Shortcut screenshot, updated Automation steps for current iOS, Configuration section synced with the script (incl. `fixedYear`, widgets, calendars, stats).
+
+Not yet verified on iOS versions older than 27.2 — feedback welcome.
+
+---
+
 ## v32 (Smart Static Year)
 
 Improved how the start month is calculated for Year and Semester views.

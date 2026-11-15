@@ -1,4 +1,4 @@
-// Year Progress Wallpaper v32 - Wallpapers, gradients and massive rework and update
+// Year Progress Wallpaper v33 - iOS 27.2 fix (Base64 output)
 // by agaragou
 // https://github.com/agaragou/LockScreen-Calendar-ShortCut
 const CONFIG = {
@@ -511,10 +511,11 @@ if (CONFIG.showStats) {
 }
 
 // --- OUTPUT ---
+// iOS 27.2+: Shortcuts can no longer read Scriptable's temporary files (sandbox),
+// so the image is passed as a Base64 string. In Shortcuts, add "Base64 Encode"
+// set to "Decode" right after "Run Script", and use its result in "Set Wallpaper".
 const image = ctx.getImage();
-const fm = FileManager.local();
-const path = fm.joinPath(fm.temporaryDirectory(), "wallpaper_auto.png");
-fm.writeImage(path, image);
+const base64Str = Data.fromPNG(image).toBase64String();
 
-Script.setShortcutOutput(path);
+Script.setShortcutOutput(base64Str);
 Script.complete();
